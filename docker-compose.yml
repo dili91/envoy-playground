@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  swa_1:
+    build:
+      context: ./docker
+      args: 
+        - APP_NAME=swa_1 
+    # ports:
+    #   - "8081:80" #debug only requirement
+  swa_2:
+    build:
+      context: ./docker
+      args: 
+        - APP_NAME=swa_2 
+  swa_3:
+    build:
+        context: ./docker
+        args: 
+        - APP_NAME=swa_3                 
+  envoy:
+    image: envoyproxy/envoy:v1.16-latest
+    depends_on:
+      - swa_1
+      - swa_2
+      - swa_3
+    ports:
+        - "8080:8080"
+    volumes:
+        - ./envoy/http.yaml:/etc/envoy/envoy.yaml
+
