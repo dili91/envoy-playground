@@ -26,5 +26,5 @@ services:
     ports:
         - "8080:8080"
     volumes:
-        - ./envoy/http.yaml:/etc/envoy/envoy.yaml
+        - ./envoy/load_balancing_round_robin.yaml:/etc/envoy/envoy.yaml
 
