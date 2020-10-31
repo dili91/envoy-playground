@@ -4,15 +4,16 @@ Project meant to experiment with [Envoy](https://www.envoyproxy.io/).
 The project contains a docker-compose file that spins up an envoy proxy and 3 simple [upstream](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/intro/terminology) backend instances. 
 
 ## Run
-to start the project:
+to start the project run below scripts and follow the interactive flow:
 
 ```
-docker-compose up --build
+./scipts/start.sh
 ```
 
 ## Test
-execute the test script defined in the root directory of the project
+
+either fire requests to loaclhost:8080 or execute the test script defined in the root directory of the project
 
 ```
-./test.sh
+./scripts/test.sh
 ```
