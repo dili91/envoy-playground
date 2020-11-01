@@ -1,4 +1,4 @@
-# HTTP tp HTTPS Proxy
+# HTTP to HTTPS Proxy
 
 Sample that proxy a plain HTTP call to an HTTPS target. 
 
