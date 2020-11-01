@@ -2,19 +2,17 @@ version: "3.8"
 services:
   swa_1:
     build:
-      context: ./docker
+      context: .
       args: 
         - APP_NAME=swa_1 
-    # ports:
-    #   - "8081:80" #debug only requirement
   swa_2:
     build:
-      context: ./docker
+      context: .
       args: 
         - APP_NAME=swa_2 
   swa_3:
     build:
-        context: ./docker
+        context: .
         args: 
         - APP_NAME=swa_3                 
   envoy:
@@ -25,6 +23,7 @@ services:
       - swa_3
     ports:
         - "8080:8080"
+        - "9901:9901"
     volumes:
-        - "./envoy/${ENVOY_CONFIG}.yaml:/etc/envoy/envoy.yaml"
+        - "./envoy.yaml:/etc/envoy/envoy.yaml"
 

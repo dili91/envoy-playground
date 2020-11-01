@@ -1,0 +1,46 @@
+static_resources:
+    listeners:
+    - name: listener_0
+      address:
+        socket_address: { address: 0.0.0.0, port_value: 8080 }
+  
+      filter_chains:
+      - filters:
+        - name: envoy.http_connection_manager
+          config:
+            stat_prefix: ingress_http
+            route_config:
+              name: local_route
+              virtual_hosts:
+              - name: local_service
+                domains: ["*"]
+                routes:
+                - match: { prefix: "/" }
+                  route: { host_rewrite: news.ycombinator.com, cluster: service_hackernews }
+            http_filters:
+            - name: envoy.filters.http.router
+  
+    clusters:
+    - name: service_hackernews
+      connect_timeout: 1s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      hosts: [{ socket_address: { address: news.ycombinator.com, port_value: 443 }}]
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          sni: news.ycombinator.com
+          common_tls_context: 
+            validation_context:
+              match_subject_alt_names:
+              - exact: "news.ycombinator.com"
+              trusted_ca:
+                filename: /etc/ssl/certs/ca-certificates.crt
+  
+admin:
+  access_log_path: /tmp/admin_access.log
+  address:
+      socket_address: { address: 0.0.0.0, port_value: 9901 }
+  
