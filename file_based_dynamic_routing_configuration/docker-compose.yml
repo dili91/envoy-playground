@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-backend
-      
       args: 
         - APP_NAME=swa_1 
   swa_2:
