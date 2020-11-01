@@ -1,24 +1,20 @@
 version: "3.8"
 services:
   swa_1:
-    hostname: pippo
+    hostname: swa_1
     build:
       context: .
       dockerfile: Dockerfile-backend
-      args: 
-        - APP_NAME=swa_1 
   swa_2:
+    hostname: swa_2
     build:
       context: .
       dockerfile: Dockerfile-backend
-      args: 
-        - APP_NAME=swa_2 
   swa_3:
+    hostname: swa_3
     build:
-        context: .
-        dockerfile: Dockerfile-backend
-        args: 
-        - APP_NAME=swa_3     
+      context: .
+      dockerfile: Dockerfile-backend
   envoy:
     build:
       context: .
