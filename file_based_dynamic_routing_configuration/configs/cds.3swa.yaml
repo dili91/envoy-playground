@@ -1,0 +1,24 @@
+resources:
+  - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
+    name: dynamic_cluster
+    connect_timeout: 1s
+    type: strict_dns
+    load_assignment:
+      cluster_name: dynamic_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: swa_1
+                port_value: 80
+        - endpoint:
+            address:
+              socket_address:
+                address: swa_2
+                port_value: 80   
+        - endpoint:
+            address:
+              socket_address:
+                address: swa_3
+                port_value: 80

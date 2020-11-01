@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  swa_1:
+    hostname: pippo
+    build:
+      context: .
+      dockerfile: Dockerfile-backend
+      args: 
+        - APP_NAME=swa_1 
+  swa_2:
+    build:
+      context: .
+      dockerfile: Dockerfile-backend
+      args: 
+        - APP_NAME=swa_2 
+  swa_3:
+    build:
+        context: .
+        dockerfile: Dockerfile-backend
+        args: 
+        - APP_NAME=swa_3     
+  envoy:
+    build:
+      context: .
+      dockerfile: Dockerfile-proxy
+    depends_on:
+      - swa_1
+      - swa_2
+      - swa_3
+    ports:
+        - "8080:8080"
+        - "9901:9901"
+    volumes:
+      - ./configs:/var/lib/envoy
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+

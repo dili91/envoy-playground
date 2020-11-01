@@ -25,7 +25,7 @@ static_resources:
           - name: envoy.filters.http.router
   clusters:
   - name: allbackend_cluster
-    connect_timeout: 0.25s
+    connect_timeout: 1s
     type: strict_dns
     lb_policy: round_robin
     load_assignment:
@@ -46,9 +46,4 @@ static_resources:
             address:
               socket_address:
                 address: swa_3
-                port_value: 80
-        - endpoint:
-            address:
-              socket_address:
-                address: swa_4
                 port_value: 80
