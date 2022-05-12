@@ -1,0 +1,78 @@
+static_resources:
+  listeners: 
+  - name: listener_0
+    address:
+        socket_address: {address:  0.0.0.0, port_value: 8080}
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stat_prefix: http_proxy
+          access_log:
+            - name: envoy.access_loggers.stream
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+                log_format:
+                  omit_empty_values: true
+                  json_format:
+                    time: "%START_TIME(%Y-%m-%dT%H:%M:%S.%7f%z)%"
+                    upstream_cluster: "%UPSTREAM_CLUSTER%"
+                    upstream_transport_failure_reason: "%UPSTREAM_TRANSPORT_FAILURE_REASON%"
+                    path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+                    elapsed_milliseconds: "%DURATION%"
+                    protocol: "%PROTOCOL%"
+                    http.status_code: "%RESPONSE_CODE%"
+                    http.request.headers.host: "%REQ(host)%"
+          route_config:
+            name: allbackend_cluster
+            virtual_hosts:
+            - name: allbackend_cluster
+              domains: ['*']
+              routes:
+              - match:
+                  prefix: "/"
+                route:
+                  weighted_clusters:
+                    clusters:
+                    - name: old_ef
+                      weight: 80
+                    - name: new_ef
+                      weight: 20
+          http_filters:
+          - name: envoy.filters.http.router
+  clusters:
+  - name: old_ef
+    connect_timeout: 5s
+    type: STRICT_DNS
+    transport_socket:
+      name: envoy.transport_sockets.tls
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+        sni: new.easyfeel.it
+    load_assignment:
+      cluster_name: deafult
+      endpoints:
+        - lb_endpoints:
+          - endpoint:
+              address:
+                socket_address:
+                  address: easyfeel.it
+                  port_value: 443
+  - name: new_ef
+    connect_timeout: 5s
+    type: STRICT_DNS
+    transport_socket:
+      name: envoy.transport_sockets.tls
+      typed_config:
+        "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+        sni: new.easyfeel.it
+    load_assignment:
+      cluster_name: deafult
+      endpoints:
+        - lb_endpoints:
+          - endpoint:
+              address:
+                socket_address:
+                  address: new.easyfeel.it
+                  port_value: 443
